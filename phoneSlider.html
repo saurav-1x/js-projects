@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Number Selector</title>
+    <style>
+        :root {
+            --primary-color: #4a6bff;
+            --secondary-color: #f5f7ff;
+            --text-color: #333;
+            --shadow-color: rgba(74, 107, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f9faff;
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .slider-container {
+            margin: 40px 0;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: var(--secondary-color);
+            outline: none;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            transition: all 0.2s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px var(--shadow-color);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            transition: all 0.2s ease;
+        }
+
+        .slider-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--secondary-color);
+            border-radius: 10px;
+            letter-spacing: 1px;
+        }
+
+        .phone-display {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            color: #666;
+        }
+
+        .formatted-number {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            font-weight: 500;
+            margin-top: 5px;
+        }
+
+        .copy-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+
+        .copy-btn:hover {
+            background-color: #3a5bef;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px var(--shadow-color);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Select Phone Number</h1>
+        <div class="slider-value" id="phoneValue">1000000000</div>
+        <div class="phone-display">
+            <div>Your selected number:</div>
+            <div class="formatted-number" id="formattedNumber">+1 (000) 000-0000</div>
+        </div>
+        
+        <div class="slider-container">
+            <div class="slider-label">
+                <span>1,000,000,000</span>
+                <span>9,999,999,999</span>
+            </div>
+            <input type="range" min="1000000000" max="9999999999" value="1000000000" class="slider" id="phoneSlider">
+        </div>
+        
+        <button class="copy-btn" id="copyBtn">
+            Copy Number
+            <span class="tooltiptext">Copy to clipboard</span>
+        </button>
+    </div>
+
+    <script>
+        const slider = document.getElementById('phoneSlider');
+        const phoneValue = document.getElementById('phoneValue');
+        const formattedNumber = document.getElementById('formattedNumber');
+        const copyBtn = document.getElementById('copyBtn');
+
+        // Format number with commas
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // Format as US phone number
+        function formatPhoneNumber(num) {
+            const str = num.toString();
+            return `+1 (${str.substring(0, 3)}) ${str.substring(3, 6)}-${str.substring(6)}`;
+        }
+
+        // Update displayed values when slider moves
+        slider.addEventListener('input', function() {
+            const value = this.value;
+            phoneValue.textContent = formatNumber(value);
+            formattedNumber.textContent = formatPhoneNumber(value);
+        });
+
+        // Copy to clipboard functionality
+        copyBtn.addEventListener('click', function() {
+            const phoneNum = formatPhoneNumber(slider.value);
+            navigator.clipboard.writeText(phoneNum).then(() => {
+                const tooltip = this.querySelector('.tooltiptext');
+                tooltip.textContent = 'Copied!';
+                setTimeout(() => {
+                    tooltip.textContent = 'Copy to clipboard';
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
