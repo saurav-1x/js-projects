@@ -186,7 +186,7 @@
         <div class="slider-value" id="phoneValue">1000000000</div>
         <div class="phone-display">
             <div>Your selected number:</div>
-            <div class="formatted-number" id="formattedNumber">+1 (000) 000-0000</div>
+            <div class="formatted-number" id="formattedNumber">+91 0000000000</div>
         </div>
         
         <div class="slider-container">
@@ -217,7 +217,7 @@
         // Format as US phone number
         function formatPhoneNumber(num) {
             const str = num.toString();
-            return `+1 (${str.substring(0, 3)}) ${str.substring(3, 6)}-${str.substring(6)}`;
+            return `+91 ${str.substring(0, 3)}${str.substring(3, 6)}${str.substring(6)}`;
         }
 
         // Update displayed values when slider moves
